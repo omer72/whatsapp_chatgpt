@@ -30,11 +30,9 @@ const App = () => {
             setMessages([...messages, {text: input, type: 'sent'}]);
             setInput('');
             console.log(process.env.REACT_APP_OPEN_AI_MODEL);
-            openai.createCompletion({
-                // model: 'curie:ft-byondpitch-2023-05-13-06-01-19',
-                model: `${process.env.REACT_APP_OPEN_AI_MODEL}`,
-                // prompt: "What strategies can be employed to address concerns about the size of a property?",
-                prompt: `${input} and translate it to Hebrew`,
+            openai.createCompletion({                
+                model: `${process.env.REACT_APP_OPEN_AI_MODEL}`,                
+                prompt: `${input}`,
                 max_tokens: 100,
                 temperature: 0.1
             }).then(res => {
