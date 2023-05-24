@@ -56,9 +56,9 @@ const App = () => {
                     </div>
                 )}
             </div>
-            <div className="input-container">
+            <div className="input-container" onKeyDown={handleKeyDown}>
                 <input type="text" value={input} onChange={handleInputChange} className="chat-input" placeholder="Type a message"/>
-                <button onClick={sendMessage} onKeyDown={handleKeyDown} className="send-button">Send</button>
+                <button onClick={sendMessage}  className="send-button">Send</button>
             </div>
         </div>
     );
