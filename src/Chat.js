@@ -28,18 +28,38 @@ const App = () => {
     const sendMessage = () => {
         if (input !== '') {
             setMessages([...messages, {text: input, type: 'sent'}]);
-            setInput('');            
-            openai.createCompletion({                
-                model: `${process.env.REACT_APP_OPEN_AI_MODEL}`,                
-                prompt: `${input}`,
+            setInput('');
+            openai.createCompletion({
+                model: "text-davinci-003",
+                prompt: `Translate this into English\n${input}`,
+                temperature: 0.3,
                 max_tokens: 100,
-                temperature: 0.1
-            }).then(res => {                
-                setMessages([...messages, {text: input, type: 'sent'}, {
-                    text: res.data.choices[0].text.split('\n')[0],
-                    type: 'received'
-                }]);
-            });
+                top_p: 1,
+                frequency_penalty: 0,
+                presence_penalty: 0,
+            }).then(res => {
+                openai.createCompletion({
+                    model: `${process.env.REACT_APP_OPEN_AI_MODEL}`,
+                    prompt: `${res.data.choices[0].text}`,
+                    max_tokens: 150,
+                    temperature: 0.1
+                }).then(res => {
+                    openai.createCompletion({
+                        model: "text-davinci-003",
+                        prompt: `Translate this into Hebrew\n${res.data.choices[0].text.split('\n')[0]}`,
+                        temperature: 0.3,
+                        max_tokens: 200,
+                        top_p: 1,
+                        frequency_penalty: 0,
+                        presence_penalty: 0,
+                    }).then(res => {
+                        setMessages([...messages, {text: input, type: 'sent'}, {
+                            text: res.data.choices[0].text,
+                            type: 'received'
+                        }]);
+                    })
+                })
+            })
         }
     }
 
