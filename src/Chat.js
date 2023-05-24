@@ -28,15 +28,13 @@ const App = () => {
     const sendMessage = () => {
         if (input !== '') {
             setMessages([...messages, {text: input, type: 'sent'}]);
-            setInput('');
-            console.log(process.env.REACT_APP_OPEN_AI_MODEL);
+            setInput('');            
             openai.createCompletion({                
                 model: `${process.env.REACT_APP_OPEN_AI_MODEL}`,                
                 prompt: `${input}`,
                 max_tokens: 100,
                 temperature: 0.1
-            }).then(res => {
-                console.log(res.data.choices[0].text.split('\n')[0])
+            }).then(res => {                
                 setMessages([...messages, {text: input, type: 'sent'}, {
                     text: res.data.choices[0].text.split('\n')[0],
                     type: 'received'
