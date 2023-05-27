@@ -8,6 +8,7 @@ const openai = new OpenAIApi(configuration);
 const App = () => {
     const [messages, setMessages] = useState([]);
     const [input, setInput] = useState('');
+    const [showLoader, setShowLoader] = useState(false);
     const chatWindow = useRef(null);
 
     const handleKeyDown = (event) => {
@@ -29,6 +30,7 @@ const App = () => {
         if (input !== '') {
             setMessages([...messages, {text: input, type: 'sent'}]);
             setInput('');
+            setShowLoader(true);
             openai.createCompletion({
                 model: "text-davinci-003",
                 prompt: `Translate this into English\n${input}`,
@@ -53,6 +55,7 @@ const App = () => {
                         frequency_penalty: 0,
                         presence_penalty: 0,
                     }).then(res => {
+                        setShowLoader(false);
                         setMessages([...messages, {text: input, type: 'sent'}, {
                             text: res.data.choices[0].text,
                             type: 'received'
@@ -70,12 +73,18 @@ const App = () => {
                     <div key={index} className={`message ${message.type}`}>
                         <p>{message.text}</p>
                     </div>
+
                 )}
+                {showLoader && <div className="stage">
+                    <div className="dot-collision"></div>
+                </div>
+                }
             </div>
             <div className="input-container" onKeyDown={handleKeyDown}>
                 <input type="text" value={input} onChange={handleInputChange} className="chat-input" placeholder="Type a message"/>
                 <button onClick={sendMessage}  className="send-button">Send</button>
             </div>
+
         </div>
     );
 }
